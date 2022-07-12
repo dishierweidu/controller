@@ -2,30 +2,23 @@
 
 bool CanPort::set_Brate()
 {
+	auto staut = system(std::string("echo root@233 | sudo ip link set can0 down").c_str());
+    staut = system(std::string("echo root@233 | sudo ip link set can0 up type can bitrate 1000000").c_str());
     return true;
 }
 
 bool CanPort::initCanPort()
 {   
-    s = socket(PF_CAN, SOCK_RAW, CAN_RAW);//创建套接字    
+	// set_Brate();
+    fd = socket(PF_CAN, SOCK_RAW, CAN_RAW);//创建套接字    
     strcpy(ifr.ifr_name, "can0");    
-    ioctl(s, SIOCGIFINDEX, &ifr);//指定can0设备    
+    ioctl(fd, SIOCGIFINDEX, &ifr);//指定can0设备    
     addr.can_family = AF_CAN;    
     addr.can_ifindex = ifr.ifr_ifindex;    
-    bind(s, (struct sockaddr*)&addr, sizeof(addr));//将套接字与can0绑定  
+    bind(fd, (struct sockaddr*)&addr, sizeof(addr));//将套接字与can0绑定  
 
     //禁用过滤规则，本进程不接收报文，只负责发送    
-    // setsockopt(s, SOL_CAN_RAW, CAN_RAW_FILTER, NULL, 0);  
-
-    //循环发送两个报文    
-    // while(1)    
-    // {
-
-    //     // = pid_calc(&motor_pid[0], target_speed, now_rotating_speed);
-        
-
-    //     usleep(1000);
-    // }    
+    // setsockopt(s, SOL_CAN_RAW, CAN_RAW_FILTER, NULL, 0);    
     // close(s);    
     return true;
 }
@@ -33,7 +26,7 @@ bool CanPort::initCanPort()
 bool CanPort::receive()
 {
     //Receive
-    rx_bytes = read(s, &rx_data, sizeof(rx_data));//接收报文        
+    rx_bytes = read(fd, &rx_data, sizeof(rx_data));//接收报文        
     //显示报文        
     if((rx_bytes>0) && (rx_data.can_id = '0x205'))        
     {            
@@ -72,7 +65,7 @@ bool CanPort::send()
     frame[0].data[1] = voltage[1];
 
     // Send
-    tx_bytes = write(s,&frame[0], sizeof(frame[0]));//发送frame[0]        
+    tx_bytes = write(fd,&frame[0], sizeof(frame[0]));//发送frame[0]        
     if(tx_bytes != sizeof(frame[0]))        
     {       
         std::cout<<sizeof(frame[0])<<std::endl;

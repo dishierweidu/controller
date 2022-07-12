@@ -27,7 +27,7 @@ class CanPort
 
     private:
         bool set_Brate();                       //设置CAN设备波特率
-        int s, rx_bytes, tx_bytes;    
+        int fd, rx_bytes, tx_bytes;    
         struct sockaddr_can addr;    
         struct ifreq ifr;    
         struct can_frame rx_data;

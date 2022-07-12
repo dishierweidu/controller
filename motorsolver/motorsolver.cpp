@@ -87,14 +87,17 @@ float MotorSolver::pid_calc(pid_struct *pid, float ref, float fdb)
 	pid->p_out  = pid->kp * pid->err[0];
 	pid->i_out += pid->ki * pid->err[0];
 	pid->d_out  = pid->kd * (pid->err[0] - pid->err[1]);
-	// std::cout<<"p_out : "<<pid->p_out<<std::endl;
-	// std::cout<<"i_out : "<<pid->i_out<<std::endl;
-	// std::cout<<"d_out : "<<pid->d_out<<std::endl;
+	std::cout<<"p_out : "<<pid->p_out<<std::endl;
+	std::cout<<"i_out : "<<pid->i_out<<std::endl;
+	std::cout<<"d_out : "<<pid->d_out<<std::endl;
 
 	LIMIT_MIN_MAX(pid->i_out, -pid->i_max, pid->i_max);
 
 	pid->output = pid->p_out + pid->i_out + pid->d_out;
 	LIMIT_MIN_MAX(pid->output, -pid->out_max, pid->out_max);
+
+	std::cout<<"pid->output : "<<pid->output<<std::endl;
+	
 	return pid->output;
 }
 

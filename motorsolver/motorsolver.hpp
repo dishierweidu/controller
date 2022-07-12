@@ -1,13 +1,15 @@
 #pragma once
 
 #include <iostream>
-#include <yaml-cpp/yaml.h>
 #include <string>
+#include <yaml-cpp/yaml.h>
+#include <matplotlibcpp.h>
 #include "../canport/can.hpp"
 
 #define LIMIT_MIN_MAX(x,min,max) (x) = (((x)<=(min))?(min):(((x)>=(max))?(max):(x)))
 
 using namespace std;
+namespace plt = matplotlibcpp;
 
 //PID参数
 typedef struct _pid_struct
