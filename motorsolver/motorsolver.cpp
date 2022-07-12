@@ -98,7 +98,8 @@ float MotorSolver::pid_calc(pid_struct *pid, float ref, float fdb)
 	return pid->output;
 }
 
-bool MotorSolver::pid_solver()
+float MotorSolver::pid_solver(Motor_Info motor_info[],int target_speed)
 {
-	return true;
+	// std::cout<<motor_info[0].rotor_angle<<std::endl;
+	return pid_calc(&motor_pid[0], target_speed, motor_info[0].rotor_speed);
 }

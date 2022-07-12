@@ -7,12 +7,15 @@ int main(int argc,char* argv[])
     MotorSolver motorsolver;
 
     motorsolver.loadParam(motor_config_path,"Motor_ID_1");
-    motorsolver.pid_solver();
+	canport.initCanPort();
+
     if(canport.initCanPort())
     {
         while (1)
         {
             canport.receive();
+    		canport.set_voltage = motorsolver.pid_solver(canport.motor_info,30000);
+			canport.send();
         }    
     }
     return 0;

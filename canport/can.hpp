@@ -11,13 +11,13 @@ typedef struct
     int rotor_speed;            //转速
     int torque_current;         //实际转矩电流
     int temp;                   //电机温度
-}moto_info;
+}Motor_Info;
 
 
 class CanPort
 {
     public:
-        moto_info motor_info[7];
+        Motor_Info motor_info[7];
         char can_device;
         int set_voltage;            //设定电压值
 

@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <yaml-cpp/yaml.h>
+#include <string>
 #include "../canport/can.hpp"
 
 #define LIMIT_MIN_MAX(x,min,max) (x) = (((x)<=(min))?(min):(((x)>=(max))?(max):(x)))
@@ -36,7 +37,7 @@ class MotorSolver
         char can_device;
 
         bool loadParam(string coord_path,string param_name);
-        bool pid_solver();
+        float pid_solver(Motor_Info motor_info[],int target_speed);
 
     private:
         pid_struct motor_pid[7];

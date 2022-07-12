@@ -14,7 +14,6 @@ add_executable(Controller main.cpp
             ${PROJECT_SOURCE_DIR}/canport/can.hpp
             ${PROJECT_SOURCE_DIR}/motorsolver/motorsolver.cpp
             ${PROJECT_SOURCE_DIR}/motorsolver/motorsolver.hpp
-            ${PROJECT_SOURCE_DIR}/main.cpp
 )
 
 target_link_libraries(Controller yaml-cpp matplotlib_cpp::matplotlib_cpp)
