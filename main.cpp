@@ -6,7 +6,7 @@ int main(int argc,char* argv[])
     CanPort canport;
     MotorSolver motorsolver;
 
-    motorsolver.loadParam(motor_config_path,"Motor_ID_1");
+    motorsolver.loadParam("./params/demo.yaml","Motor_ID_1");
 	canport.initCanPort();
 
     if(canport.initCanPort())
