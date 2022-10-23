@@ -28,7 +28,7 @@ bool CanPort::receive()
     //Receive
     rx_bytes = read(fd, &rx_data, sizeof(rx_data));//接收报文        
     //显示报文        
-    if((rx_bytes>0) && (rx_data.can_id = '0x205'))        
+    if((rx_bytes>0) && (rx_data.can_id = '0x200'))        
     {            
         // printf("ID=0x%XDLC=%ddata[0]=0x%X\n", rx_data.can_id, rx_data.can_dlc, rx_data.data[0]);
 
@@ -59,7 +59,7 @@ bool CanPort::send()
     data_split(voltage,set_voltage);
 
     //生成两个报文    
-    frame[0].can_id = 0x1FF;   
+    frame[0].can_id = 0x200;   
     frame[0].can_dlc = 8;
     frame[0].data[0] = voltage[0];
     frame[0].data[1] = voltage[1];

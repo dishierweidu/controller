@@ -6,9 +6,9 @@ Motor_ID_1:
 
 Motor_ID_2:
     # PID
-    KP: 0.29
+    KP: 0.0125
     KI: 0
-    KD: 0.0175
+    KD: 0.005
 
 Motor_ID_3:
     # PID
