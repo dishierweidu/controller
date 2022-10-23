@@ -1,34 +1,23 @@
 #pragma once
 
-#include <iostream>
-#include <string>
-#include <yaml-cpp/yaml.h>
-#include <matplotlibcpp.h>
+#include "algorithm.hpp"
 #include "../canport/can.hpp"
 
 #define LIMIT_MIN_MAX(x,min,max) (x) = (((x)<=(min))?(min):(((x)>=(max))?(max):(x)))
+#define LimitMax(input, max)   \
+    {                          \
+        if (input > max)       \
+        {                      \
+            input = max;       \
+        }                      \
+        else if (input < -max) \
+        {                      \
+            input = -max;      \
+        }                      \
+    }
 
 using namespace std;
 namespace plt = matplotlibcpp;
-
-//PID参数
-typedef struct _pid_struct
-{
-  float kp;
-  float ki;
-  float kd;
-  float i_max;
-  float out_max;
-  
-  float ref;      // target value
-  float fdb;      // feedback value
-  float err[2];   // error and last error
-
-  float p_out;
-  float i_out;
-  float d_out;
-  float output;
-}pid_struct;  
 
 class MotorSolver
 {
@@ -51,4 +40,13 @@ class MotorSolver
                         float out_max,
                         float i_out);
         float pid_calc(pid_struct *pid, float ref, float fdb);
+
+        void ladrc_init(ladrc_type_def *ladrc,
+                        float wc,
+                        float b0,
+                        float wo,
+                        float max_out);
+        float ladrc_calc(ladrc_type_def *ladrc_calc, float ref, float set, float gyro);
+        float ladrsmc_calc(ladrsmc_type_def *ladrcsmc_calc, float ref, float fdb);
+        float ladrc_fdw_calc(ladrc_fdw_type_def *ladrc_fdw_calc, float ref, float fdb);
 };

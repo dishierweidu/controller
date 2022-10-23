@@ -45,9 +45,9 @@ bool MotorSolver::loadParam(string motor_config_path,string param_name)
 /**
   * @brief  init PID parameter | 初始化PID参数
   * @param  pid struct
-    @param  parameter
-	@param	i_max 积分控制器输出上限
-	@param	out_max PID控制器输出上限
+  * @param  parameter
+	* @param	i_max 积分控制器输出上限
+	* @param	out_max PID控制器输出上限
   * @retval None
   */
 void MotorSolver::pid_init(pid_struct *pid,
@@ -67,7 +67,7 @@ void MotorSolver::pid_init(pid_struct *pid,
 }
 
 /**
-  * @brief  PID calculation | PID结算
+  * @brief  PID calculation | PID解算
   * @param  pid struct
     @param  reference value
     @param  feedback value
@@ -99,6 +99,84 @@ float MotorSolver::pid_calc(pid_struct *pid, float ref, float fdb)
 	std::cout<<"pid->output : "<<pid->output<<std::endl;
 	
 	return pid->output;
+}
+
+/**
+ * @brief 限幅函数
+ * 
+ * @param x 输入
+ * @param min 最小值
+ * @param max 最大值
+ */
+void MotorSolver::ladrc_init(ladrc_type_def *ladrc,
+                        float wc,
+                        float b0,
+                        float wo,
+                        float max_out)
+{
+  ladrc->wc = wc;
+  ladrc->b0 = b0;
+  ladrc->wo = wo;
+  ladrc->max_out = max_out;
+
+  ladrc->fdb = 0.0f;
+  ladrc->u = 0.0f;
+  ladrc->set = 0.0f;
+  ladrc->gyro = 0.0f;
+  ladrc->z1 = 0;
+  ladrc->z2 = 0;
+  ladrc->time_cons = 0.002;//采样率
+}
+
+/**
+ * @brief Ladrc calculation | Ladrc解算
+ * 
+ * 
+ */
+float MotorSolver::ladrc_calc(ladrc_type_def *ladrc, float ref, float set, float gyro)
+{
+  float err;
+	err = set - ref;
+	
+	
+	ladrc->set = set;
+  ladrc->fdb = ref;
+	ladrc->err = rad_format(err);
+	ladrc->gyro = gyro;
+	
+	//零阶保持法离散化积分器
+	ladrc->z2 += ladrc->time_cons*(ladrc->wo*ladrc->wo)*(ladrc->gyro-ladrc->z1);
+	ladrc->z1 += ladrc->time_cons*((ladrc->b0*ladrc->u) + ladrc->z2 + (2*ladrc->wo)*(ladrc->gyro-ladrc->z1));
+	ladrc->u = (ladrc->wc*ladrc->wc*ladrc->err - 2*ladrc->wc*ladrc->z1 - ladrc->z2)/ladrc->b0;
+	LimitMax(ladrc->u, ladrc->max_out);
+   
+	return ladrc->u;
+}
+
+/**
+ * @brief Ladrsmc calculation | Ladrsmc解算
+ * 
+ * @param x 输入
+ * @param min 最小值
+ * @param max 最大值
+ * @return float 限幅后的值
+ */
+float MotorSolver::ladrsmc_calc(ladrsmc_type_def *ladrsmc, float ref, float fdb)
+{
+  return 0;
+}
+
+/**
+ * @brief Ladrc_feedforward calculation | Ladrc_feedforward解算
+ * 
+ * @param x 输入
+ * @param min 最小值
+ * @param max 最大值
+ * @return float 限幅后的值
+ */
+float MotorSolver::ladrc_fdw_calc(ladrc_fdw_type_def *ladrc_fdw_calc, float ref, float fdb)
+{
+  return 0;
 }
 
 float MotorSolver::pid_solver(Motor_Info motor_info[],int target_speed)
